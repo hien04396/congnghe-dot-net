@@ -19,11 +19,12 @@
     <tbody>
     @foreach (var item in Model.Items)
     {
+        var lineTotalFormatted = item.LineTotal.ToString("C");
         <tr>
             <td>@item.Product?.Name</td>
             <td>@item.Quantity</td>
             <td>@item.UnitPrice.ToString("C")</td>
-            <td>@item.LineTotal.ToString("C")</td>
+            <td>@lineTotalFormatted</td>
         </tr>
     }
     </tbody>

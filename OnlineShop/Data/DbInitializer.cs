@@ -7,7 +7,8 @@ public static class DbInitializer
 {
     public static void EnsureSeedData(OnlineStoreContext context)
     {
-        context.Database.Migrate();
+        // Use EnsureCreated instead of Migrate to avoid needing __EFMigrationsHistory table
+        context.Database.EnsureCreated();
 
         if (!context.AdminUsers.Any())
         {

@@ -22,9 +22,8 @@ public class HomeController : Controller
         var featured = await _context.Products
             .Include(p => p.Images)
             .Include(p => p.Inventory)
-            .Where(p => p.IsActive)
+            .Where(p => p.IsActive && p.IsFeatured)
             .OrderBy(p => p.Name)
-            .Take(4)
             .ToListAsync();
 
         return View(featured);
