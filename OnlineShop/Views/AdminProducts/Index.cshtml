@@ -1,0 +1,61 @@
+@model IEnumerable<OnlineShop.Models.Product>
+
+@{
+    ViewData["Title"] = "Products";
+    var categories = (Microsoft.AspNetCore.Mvc.Rendering.SelectList)ViewData["Categories"]!;
+    var selectedCategoryId = ViewData["SelectedCategoryId"] as int?;
+}
+
+<h2>Products</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <select name="categoryId" class="form-select">
+            <option value="">All categories</option>
+            @foreach (var item in categories)
+            {
+                <option value="@item.Value" selected="@(selectedCategoryId?.ToString() == item.Value ? "selected" : null)">
+                    @item.Text
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-primary">Filter</button>
+    </div>
+    <div class="col-md-6 text-end">
+        <a asp-action="Create" class="btn btn-primary">Create new product</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Active</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Category?.Name</td>
+            <td>@item.Price.ToString("C")</td>
+            <td>@item.Inventory?.StockQuantity</td>
+            <td>@(item.IsActive ? "Yes" : "No")</td>
+            <td class="text-end">
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                <a asp-controller="AdminProductImages" asp-action="Index" asp-route-productId="@item.Id" class="btn btn-sm btn-outline-primary">Images</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+

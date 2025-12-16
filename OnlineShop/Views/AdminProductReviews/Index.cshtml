@@ -1,0 +1,59 @@
+@model IEnumerable<OnlineShop.Models.ProductReview>
+
+@{
+    ViewData["Title"] = "Product Reviews";
+    var products = (IEnumerable<OnlineShop.Models.Product>)ViewData["Products"]!;
+    var productId = ViewData["ProductId"] as int?;
+}
+
+<h2>Product Reviews (Admin)</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <select name="productId" class="form-select">
+            <option value="">All products</option>
+            @foreach (var p in products)
+            {
+                <option value="@p.Id" selected="@(productId == p.Id ? "selected" : null)">@p.Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-primary">Filter</button>
+    </div>
+    <div class="col-md-6 text-end">
+        <a asp-action="Create" class="btn btn-primary">Add review</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Product</th>
+        <th>Title</th>
+        <th>Rating</th>
+        <th>Created</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Product?.Name</td>
+            <td>@item.Title</td>
+            <td>@item.Rating</td>
+            <td>@item.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd")</td>
+            <td class="text-end">
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
+                <form asp-action="Delete" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+

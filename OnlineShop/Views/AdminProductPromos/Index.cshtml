@@ -1,0 +1,45 @@
+@model IEnumerable<OnlineShop.Models.ProductPromo>
+
+@{
+    ViewData["Title"] = "Product Promos";
+}
+
+<h2>Product Promos</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create promo</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Product</th>
+        <th>Amount Off</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Active</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Product?.Name</td>
+            <td>@item.AmountOff.ToString("C")</td>
+            <td>@item.StartDate?.ToLocalTime().ToString("yyyy-MM-dd")</td>
+            <td>@item.EndDate?.ToLocalTime().ToString("yyyy-MM-dd")</td>
+            <td>@(item.IsActive ? "Yes" : "No")</td>
+            <td class="text-end">
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
+                <form asp-action="Delete" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+

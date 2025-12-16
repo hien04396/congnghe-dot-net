@@ -1,0 +1,44 @@
+@model IEnumerable<OnlineShop.Models.AdminUser>
+
+@{
+    ViewData["Title"] = "Admin Users";
+}
+
+<h2>Admin Users</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create admin account</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Username</th>
+        <th>Default</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Username</td>
+            <td>@(item.IsDefault ? "Yes" : "No")</td>
+            <td class="text-end">
+                @if (!item.IsDefault)
+                {
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+

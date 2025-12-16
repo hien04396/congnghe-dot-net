@@ -1,0 +1,24 @@
+@model IEnumerable<OnlineShop.Models.ProductCategory>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h2>Product Categories</h2>
+
+<div class="row">
+    @foreach (var cat in Model)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@cat.Name</h5>
+                    <p class="card-text text-muted">@cat.Description</p>
+                    <a asp-action="Products" asp-route-categoryId="@cat.Id" class="btn btn-outline-primary btn-sm">View products</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+

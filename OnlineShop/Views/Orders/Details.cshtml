@@ -1,0 +1,36 @@
+@model OnlineShop.Models.Order
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h2>Order #@Model.Id</h2>
+<p class="text-muted">Placed on @Model.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Unit price</th>
+        <th>Line total</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Items)
+    {
+        <tr>
+            <td>@item.Product?.Name</td>
+            <td>@item.Quantity</td>
+            <td>@item.UnitPrice.ToString("C")</td>
+            <td>@item.LineTotal.ToString("C")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<h4>Total: @Model.TotalAmount.ToString("C")</h4>
+
+<a asp-action="Index" class="btn btn-secondary mt-2">Back to orders</a>
+
+

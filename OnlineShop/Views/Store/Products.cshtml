@@ -1,0 +1,67 @@
+@model OnlineShop.ViewModels.ProductListViewModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<h2>Products</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <select name="categoryId" class="form-select">
+            <option value="">All categories</option>
+            @foreach (var cat in Model.Categories)
+            {
+                <option value="@cat.Id" selected="@(Model.SelectedCategoryId == cat.Id ? "selected" : null)">@cat.Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="search" value="@Model.Search" class="form-control" placeholder="Search by name" />
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+    </div>
+</form>
+
+<div class="row">
+    @foreach (var p in Model.Products)
+    {
+        var primaryImage = p.Images.FirstOrDefault(i => i.IsPrimary)?.ImageUrl ?? "/images/sample-placeholder.png";
+        var isOutOfStock = p.Inventory == null || p.Inventory.StockQuantity <= 0;
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <img src="@primaryImage" class="card-img-top" alt="@p.Name" />
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">@p.Name</h5>
+                    <p class="card-text text-muted">@p.Price.ToString("C")</p>
+                    @if (isOutOfStock)
+                    {
+                        <span class="badge text-bg-danger mb-2">Out of stock</span>
+                    }
+                    <a asp-action="Details" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary mt-auto">View details</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Product pages">
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.Page ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Products"
+                       asp-route-page="@i"
+                       asp-route-categoryId="@Model.SelectedCategoryId"
+                       asp-route-search="@Model.Search">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+

@@ -1,0 +1,82 @@
+@model OnlineShop.ViewModels.ProductDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Product.Name;
+    var mainImage = Model.Images.FirstOrDefault(i => i.IsPrimary)?.ImageUrl ?? "/images/sample-placeholder.png";
+}
+
+<div class="row">
+    <div class="col-md-5">
+        <img src="@mainImage" class="img-fluid mb-3" alt="@Model.Product.Name" />
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var img in Model.Images)
+            {
+                <img src="@img.ImageUrl" alt="@Model.Product.Name" style="height:60px;border:1px solid #ddd;padding:2px;" />
+            }
+        </div>
+    </div>
+    <div class="col-md-7">
+        <h2>@Model.Product.Name</h2>
+        <p class="text-muted">@Model.Product.Category?.Name</p>
+        @if (Model.ActivePromo != null)
+        {
+            <p>
+                <span class="text-decoration-line-through text-muted">@Model.Product.Price.ToString("C")</span>
+                <span class="fw-bold ms-2">@Model.EffectivePrice.ToString("C")</span>
+                <span class="badge text-bg-success ms-2">Promo -@Model.ActivePromo.AmountOff.ToString("C")</span>
+            </p>
+        }
+        else
+        {
+            <p class="fw-bold">@Model.Product.Price.ToString("C")</p>
+        }
+
+        @if (Model.IsOutOfStock)
+        {
+            <p><span class="badge text-bg-danger">Out of stock</span></p>
+        }
+        else
+        {
+            <p><span class="badge text-bg-success">In stock: @Model.Inventory!.StockQuantity</span></p>
+        }
+
+        <p>@Model.Product.Description</p>
+
+        <form asp-controller="Cart" asp-action="Add" method="post" class="mt-3">
+            <input type="hidden" name="productId" value="@Model.Product.Id" />
+            <div class="input-group" style="max-width: 200px;">
+                <input type="number" name="quantity" value="1" min="1" class="form-control" @(Model.IsOutOfStock ? "disabled" : null) />
+                <button type="submit" class="btn btn-primary" @(Model.IsOutOfStock ? "disabled" : null)>Add to cart</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<hr />
+
+<h4>Reviews</h4>
+@if (!Model.Reviews.Any())
+{
+    <p class="text-muted">No reviews yet.</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var r in Model.Reviews)
+        {
+            <li class="list-group-item">
+                <strong>@r.Title</strong>
+                <span class="ms-2 text-warning">
+                    @for (int i = 0; i < r.Rating; i++)
+                    {
+                        @:★
+                    }
+                </span>
+                <div class="small text-muted">@r.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd")</div>
+                <p class="mb-0">@r.Content</p>
+            </li>
+        }
+    </ul>
+}
+
+
