@@ -1,10 +1,4 @@
-﻿CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
-    `MigrationId` varchar(150) CHARACTER SET utf8mb4 NOT NULL,
-    `ProductVersion` varchar(32) CHARACTER SET utf8mb4 NOT NULL,
-    CONSTRAINT `PK___EFMigrationsHistory` PRIMARY KEY (`MigrationId`)
-) CHARACTER SET=utf8mb4;
-
-START TRANSACTION;
+﻿START TRANSACTION;
 ALTER DATABASE CHARACTER SET utf8mb4;
 
 CREATE TABLE `AdminUsers` (
@@ -46,6 +40,7 @@ CREATE TABLE `Products` (
     `Description` longtext CHARACTER SET utf8mb4 NULL,
     `Price` decimal(18,2) NOT NULL,
     `IsActive` tinyint(1) NOT NULL,
+    `IsFeatured` tinyint(1) NOT NULL,
     `CreatedAt` datetime(6) NOT NULL,
     `CategoryId` int NOT NULL,
     CONSTRAINT `PK_Products` PRIMARY KEY (`Id`),
@@ -123,9 +118,6 @@ CREATE INDEX `IX_ProductReviews_CreatedByAdminId` ON `ProductReviews` (`CreatedB
 CREATE INDEX `IX_ProductReviews_ProductId` ON `ProductReviews` (`ProductId`);
 
 CREATE INDEX `IX_Products_CategoryId` ON `Products` (`CategoryId`);
-
-INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-VALUES ('20251215171338_InitialCreate', '9.0.0');
 
 COMMIT;
 
