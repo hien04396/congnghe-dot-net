@@ -50,6 +50,14 @@ public class StoreController : Controller
             .Include(p => p.Images)
             .ToListAsync();
 
+        // Load active promos for the products
+        var productIds = products.Select(p => p.Id).ToList();
+        var activePromos = await _context.ProductPromos
+            .Where(pr => productIds.Contains(pr.ProductId) && pr.IsActive)
+            .ToListAsync();
+        
+        ViewData["ActivePromos"] = activePromos;
+
         var vm = new ProductListViewModel
         {
             Categories = categories,

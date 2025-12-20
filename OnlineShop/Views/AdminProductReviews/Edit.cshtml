@@ -3,12 +3,17 @@
 @{
     ViewData["Title"] = "Edit Review";
     var products = (IEnumerable<OnlineShop.Models.Product>)ViewData["Products"]!;
+    var productId = Context.Request.Query["productId"].ToString();
 }
 
 <h2>Edit Review</h2>
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
+    @if (!string.IsNullOrEmpty(productId))
+    {
+        <input type="hidden" name="returnProductId" value="@productId" />
+    }
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="mb-3">
         <label class="form-label">Product</label>
@@ -36,7 +41,7 @@
         <span asp-validation-for="Rating" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    <a asp-action="Index" asp-route-productId="@productId" class="btn btn-secondary">Cancel</a>
 </form>
 
 @section Scripts {

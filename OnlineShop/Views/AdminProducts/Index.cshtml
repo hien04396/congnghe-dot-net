@@ -52,12 +52,24 @@
             <td>@item.Inventory?.StockQuantity</td>
             <td>@(item.IsActive ? "Yes" : "No")</td>
             <td class="text-end">
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
-                <a asp-controller="AdminProductImages" asp-action="Index" asp-route-productId="@item.Id" class="btn btn-sm btn-outline-primary">Images</a>
-                <a asp-controller="AdminProductInventory" asp-action="ManageStock" asp-route-productId="@item.Id" class="btn btn-sm btn-outline-success">
-                    <i class="bi bi-box-seam"></i> Stock
-                </a>
+                <div class="btn-group me-2" role="group">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </div>
+                <div class="btn-group" role="group">
+                    <a asp-controller="AdminProductImages" asp-action="Index" asp-route-productId="@item.Id" class="btn btn-sm btn-outline-primary" title="Manage Images">
+                        <i class="bi bi-images"></i> Images
+                    </a>
+                    <a asp-controller="AdminProductInventory" asp-action="ManageStock" asp-route-productId="@item.Id" class="btn btn-sm btn-outline-success" title="Manage Stock">
+                        <i class="bi bi-box-seam"></i> Stock
+                    </a>
+                    <a asp-controller="AdminProductReviews" asp-action="Index" asp-route-productId="@item.Id" class="btn btn-sm btn-outline-info" title="Manage Reviews">
+                        <i class="bi bi-star"></i> Reviews
+                    </a>
+                    <a asp-controller="AdminProductPromos" asp-action="Index" asp-route-productId="@item.Id" class="btn btn-sm btn-outline-warning" title="Manage Promos">
+                        <i class="bi bi-tag"></i> Promos
+                    </a>
+                </div>
             </td>
         </tr>
     }

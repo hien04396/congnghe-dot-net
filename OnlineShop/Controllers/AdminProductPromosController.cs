@@ -16,32 +16,57 @@ public class AdminProductPromosController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int? productId = null)
     {
-        var promos = await _context.ProductPromos
+        var query = _context.ProductPromos
             .Include(p => p.Product)
+            .AsQueryable();
+
+        if (productId.HasValue)
+        {
+            query = query.Where(p => p.ProductId == productId.Value);
+            ViewData["ProductId"] = productId.Value;
+            
+            var product = await _context.Products.FindAsync(productId.Value);
+            ViewData["ProductName"] = product?.Name;
+        }
+
+        var promos = await query
             .OrderByDescending(p => p.IsActive)
             .ThenBy(p => p.Product!.Name)
             .ToListAsync();
+
+        ViewData["Products"] = await _context.Products
+            .OrderBy(p => p.Name)
+            .ToListAsync();
+
         return View(promos);
     }
 
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create(int? productId = null)
     {
         ViewData["Products"] = await _context.Products
             .OrderBy(p => p.Name)
             .ToListAsync();
-        return View(new ProductPromo
+        
+        var promo = new ProductPromo
         {
             StartDate = DateTime.UtcNow,
             EndDate = DateTime.UtcNow.AddDays(7),
             IsActive = true
-        });
+        };
+        
+        if (productId.HasValue)
+        {
+            promo.ProductId = productId.Value;
+        }
+        
+        return View(promo);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(ProductPromo promo)
+    public async Task<IActionResult> Create(ProductPromo promo, int? returnProductId)
     {
         if (!ModelState.IsValid)
         {
@@ -64,10 +89,15 @@ public class AdminProductPromosController : Controller
 
         _context.ProductPromos.Add(promo);
         await _context.SaveChangesAsync();
+        
+        if (returnProductId.HasValue)
+        {
+            return RedirectToAction(nameof(Index), new { productId = returnProductId });
+        }
         return RedirectToAction(nameof(Index));
     }
 
-    public async Task<IActionResult> Edit(int id)
+    public async Task<IActionResult> Edit(int id, int? productId = null)
     {
         var promo = await _context.ProductPromos.FindAsync(id);
         if (promo == null)
@@ -83,7 +113,7 @@ public class AdminProductPromosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, ProductPromo promo)
+    public async Task<IActionResult> Edit(int id, ProductPromo promo, int? returnProductId)
     {
         if (id != promo.Id)
         {
@@ -111,12 +141,17 @@ public class AdminProductPromosController : Controller
 
         _context.Update(promo);
         await _context.SaveChangesAsync();
+        
+        if (returnProductId.HasValue)
+        {
+            return RedirectToAction(nameof(Index), new { productId = returnProductId });
+        }
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id, int? returnProductId)
     {
         var promo = await _context.ProductPromos.FindAsync(id);
         if (promo == null)
@@ -124,9 +159,15 @@ public class AdminProductPromosController : Controller
             return NotFound();
         }
 
+        var productId = promo.ProductId;
         _context.ProductPromos.Remove(promo);
         await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
+        
+        if (returnProductId.HasValue)
+        {
+            return RedirectToAction(nameof(Index), new { productId = returnProductId });
+        }
+        return RedirectToAction(nameof(Index), new { productId });
     }
 }
 

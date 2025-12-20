@@ -25,7 +25,7 @@ else
         <thead>
         <tr>
             <th>Product</th>
-            <th>Price</th>
+            <th>Unit Price</th>
             <th>Quantity</th>
             <th>Subtotal</th>
             <th></th>
@@ -45,8 +45,24 @@ else
                     {
                         <div class="small text-danger">Out of stock</div>
                     }
+                    @if (item.HasPromo)
+                    {
+                        <span class="badge bg-success small ms-2">-@item.PromoDiscount!.Value.ToString("C") OFF</span>
+                    }
                 </td>
-                <td>@item.UnitPrice.ToString("C")</td>
+                <td>
+                    @if (item.HasPromo)
+                    {
+                        <div>
+                            <span class="text-decoration-line-through text-muted small">@item.OriginalPrice.ToString("C")</span>
+                            <span class="text-danger fw-bold d-block">@item.UnitPrice.ToString("C")</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <span>@item.UnitPrice.ToString("C")</span>
+                    }
+                </td>
                 <td>
                     <form asp-action="Update" method="post" class="d-inline-flex">
                         <input type="hidden" name="productId" value="@item.ProductId" />

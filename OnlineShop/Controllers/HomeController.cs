@@ -26,6 +26,14 @@ public class HomeController : Controller
             .OrderBy(p => p.Name)
             .ToListAsync();
 
+        // Load active promos for featured products
+        var productIds = featured.Select(p => p.Id).ToList();
+        var activePromos = await _context.ProductPromos
+            .Where(pr => productIds.Contains(pr.ProductId) && pr.IsActive)
+            .ToListAsync();
+        
+        ViewData["ActivePromos"] = activePromos;
+
         return View(featured);
     }
 

@@ -41,6 +41,12 @@ public class CartService
             return;
         }
 
+        // Get active promo for this product
+        var activePromo = await _context.ProductPromos
+            .Where(pr => pr.ProductId == productId && pr.IsActive)
+            .OrderByDescending(pr => pr.StartDate)
+            .FirstOrDefaultAsync();
+
         var stock = product.Inventory?.StockQuantity ?? 0;
         var cart = GetCart();
         var existing = cart.FirstOrDefault(c => c.ProductId == productId);
@@ -49,6 +55,9 @@ public class CartService
         var finalQty = Math.Min(desiredQty, stock);
 
         var isOutOfStock = stock <= 0;
+        
+        var promoDiscount = activePromo != null ? Math.Min(activePromo.AmountOff, product.Price) : (decimal?)null;
+        var effectivePrice = activePromo != null ? Math.Max(0, product.Price - activePromo.AmountOff) : product.Price;
 
         if (existing == null)
         {
@@ -56,7 +65,9 @@ public class CartService
             {
                 ProductId = product.Id,
                 ProductName = product.Name,
-                UnitPrice = product.Price,
+                OriginalPrice = product.Price,
+                UnitPrice = effectivePrice,
+                PromoDiscount = promoDiscount,
                 Quantity = finalQty,
                 IsOutOfStock = isOutOfStock,
                 ImageUrl = product.Images.FirstOrDefault(i => i.IsPrimary)?.ImageUrl
@@ -66,6 +77,9 @@ public class CartService
         {
             existing.Quantity = finalQty;
             existing.IsOutOfStock = isOutOfStock;
+            existing.OriginalPrice = product.Price;
+            existing.UnitPrice = effectivePrice;
+            existing.PromoDiscount = promoDiscount;
         }
 
         SaveCart(cart);
@@ -86,6 +100,52 @@ public class CartService
             if (item.Quantity > stock)
             {
                 item.Quantity = stock;
+            }
+        }
+
+        SaveCart(cart);
+    }
+
+    public async Task RefreshPricesAsync()
+    {
+        var cart = GetCart();
+        var ids = cart.Select(c => c.ProductId).ToList();
+        
+        // Get current product prices
+        var products = await _context.Products
+            .Where(p => ids.Contains(p.Id))
+            .ToDictionaryAsync(p => p.Id, p => p.Price);
+        
+        // Get active promos - load all and process in memory
+        var activePromosList = await _context.ProductPromos
+            .Where(pr => ids.Contains(pr.ProductId) && pr.IsActive)
+            .ToListAsync();
+        
+        // Get the most recent promo for each product
+        var activePromos = activePromosList
+            .GroupBy(pr => pr.ProductId)
+            .ToDictionary(
+                g => g.Key, 
+                g => g.OrderByDescending(pr => pr.StartDate).First()
+            );
+
+        foreach (var item in cart)
+        {
+            if (products.TryGetValue(item.ProductId, out var price))
+            {
+                item.OriginalPrice = price;
+                
+                if (activePromos.TryGetValue(item.ProductId, out var promo))
+                {
+                    var discount = Math.Min(promo.AmountOff, price);
+                    item.PromoDiscount = discount;
+                    item.UnitPrice = Math.Max(0, price - promo.AmountOff);
+                }
+                else
+                {
+                    item.PromoDiscount = null;
+                    item.UnitPrice = price;
+                }
             }
         }
 

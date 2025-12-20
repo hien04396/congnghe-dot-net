@@ -22,6 +22,7 @@ public class CartController : Controller
     public async Task<IActionResult> Index()
     {
         await _cartService.RefreshStockFlagsAsync();
+        await _cartService.RefreshPricesAsync();
         var items = _cartService.GetCart();
         var vm = new CartViewModel
         {
@@ -61,6 +62,7 @@ public class CartController : Controller
     public async Task<IActionResult> Checkout()
     {
         await _cartService.RefreshStockFlagsAsync();
+        await _cartService.RefreshPricesAsync();
         var items = _cartService.GetCart();
 
         // Remove out-of-stock items automatically

@@ -40,17 +40,24 @@ public class AdminProductReviewsController : Controller
         return View(reviews);
     }
 
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create(int? productId = null)
     {
         ViewData["Products"] = await _context.Products
             .OrderBy(p => p.Name)
             .ToListAsync();
-        return View(new ProductReview { Rating = 5 });
+        
+        var review = new ProductReview { Rating = 5 };
+        if (productId.HasValue)
+        {
+            review.ProductId = productId.Value;
+        }
+        
+        return View(review);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(ProductReview review)
+    public async Task<IActionResult> Create(ProductReview review, int? returnProductId)
     {
         if (!ModelState.IsValid)
         {
@@ -68,10 +75,15 @@ public class AdminProductReviewsController : Controller
 
         _context.ProductReviews.Add(review);
         await _context.SaveChangesAsync();
+        
+        if (returnProductId.HasValue)
+        {
+            return RedirectToAction(nameof(Index), new { productId = returnProductId });
+        }
         return RedirectToAction(nameof(Index));
     }
 
-    public async Task<IActionResult> Edit(int id)
+    public async Task<IActionResult> Edit(int id, int? productId = null)
     {
         var review = await _context.ProductReviews.FindAsync(id);
         if (review == null)
@@ -88,7 +100,7 @@ public class AdminProductReviewsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, ProductReview review)
+    public async Task<IActionResult> Edit(int id, ProductReview review, int? returnProductId)
     {
         if (id != review.Id)
         {
@@ -105,12 +117,17 @@ public class AdminProductReviewsController : Controller
 
         _context.Update(review);
         await _context.SaveChangesAsync();
+        
+        if (returnProductId.HasValue)
+        {
+            return RedirectToAction(nameof(Index), new { productId = returnProductId });
+        }
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id, int? returnProductId)
     {
         var review = await _context.ProductReviews.FindAsync(id);
         if (review == null)
@@ -118,9 +135,15 @@ public class AdminProductReviewsController : Controller
             return NotFound();
         }
 
+        var productId = review.ProductId;
         _context.ProductReviews.Remove(review);
         await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
+        
+        if (returnProductId.HasValue)
+        {
+            return RedirectToAction(nameof(Index), new { productId = returnProductId });
+        }
+        return RedirectToAction(nameof(Index), new { productId });
     }
 }
 

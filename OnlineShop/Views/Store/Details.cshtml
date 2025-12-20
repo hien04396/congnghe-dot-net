@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = Model.Product.Name;
     var mainImage = Model.Images.FirstOrDefault(i => i.IsPrimary)?.ImageUrl ?? "/images/sample-placeholder.png";
+    var displayDiscount = Model.ActivePromo != null ? Math.Min(Model.ActivePromo.AmountOff, Model.Product.Price) : 0;
 }
 
 <div class="row">
@@ -27,7 +28,7 @@
             <p>
                 <span class="text-decoration-line-through text-muted">@Model.Product.Price.ToString("C")</span>
                 <span class="fw-bold ms-2">@Model.EffectivePrice.ToString("C")</span>
-                <span class="badge text-bg-success ms-2">Promo -@Model.ActivePromo.AmountOff.ToString("C")</span>
+                <span class="badge text-bg-success ms-2">Promo -@displayDiscount.ToString("C")</span>
             </p>
         }
         else
