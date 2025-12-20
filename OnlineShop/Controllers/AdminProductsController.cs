@@ -17,7 +17,7 @@ public class AdminProductsController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index(int? categoryId = null, int page = 1)
+    public async Task<IActionResult> Index(int? categoryId = null, bool? featuredOnly = null, int page = 1)
     {
         const int pageSize = 15;
         
@@ -32,6 +32,12 @@ public class AdminProductsController : Controller
         {
             query = query.Where(p => p.CategoryId == categoryId.Value);
             ViewData["SelectedCategoryId"] = categoryId.Value;
+        }
+
+        if (featuredOnly.HasValue && featuredOnly.Value)
+        {
+            query = query.Where(p => p.IsFeatured);
+            ViewData["FeaturedOnly"] = true;
         }
 
         query = query.OrderByDescending(p => p.CreatedAt);

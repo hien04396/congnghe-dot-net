@@ -23,7 +23,7 @@ public class HomeController : Controller
             .Include(p => p.Images)
             .Include(p => p.Inventory)
             .Where(p => p.IsActive && p.IsFeatured)
-            .OrderBy(p => p.Name)
+            .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
 
         // Load active promos for featured products

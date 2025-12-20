@@ -4,6 +4,7 @@
     ViewData["Title"] = "Products";
     var categories = (Microsoft.AspNetCore.Mvc.Rendering.SelectList)ViewData["Categories"]!;
     var selectedCategoryId = ViewData["SelectedCategoryId"] as int?;
+    var featuredOnly = ViewData["FeaturedOnly"] as bool? ?? false;
     var currentPage = (int)ViewData["CurrentPage"]!;
     var totalPages = (int)ViewData["TotalPages"]!;
     var totalItems = (int)ViewData["TotalItems"]!;
@@ -11,8 +12,8 @@
 
 <h2>Products</h2>
 
-<form method="get" class="row g-2 mb-3">
-    <div class="col-md-4">
+<form method="get" class="row g-2 mb-3 align-items-center">
+    <div class="col-md-3">
         <select name="categoryId" class="form-select">
             <option value="">All categories</option>
             @foreach (var item in categories)
@@ -24,9 +25,17 @@
         </select>
     </div>
     <div class="col-md-2">
-        <button type="submit" class="btn btn-outline-primary">Filter</button>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="featuredOnly" value="true" id="featuredOnly" checked="@(featuredOnly ? "checked" : null)">
+            <label class="form-check-label" for="featuredOnly">
+                Featured only
+            </label>
+        </div>
     </div>
-    <div class="col-md-6 text-end">
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+    </div>
+    <div class="col-md-5 text-end">
         <a asp-action="Create" class="btn btn-primary">Create new product</a>
     </div>
 </form>
@@ -38,6 +47,7 @@
         <th>Category</th>
         <th>Price</th>
         <th>Stock</th>
+        <th>Featured</th>
         <th>Active</th>
         <th></th>
     </tr>
@@ -50,6 +60,16 @@
             <td>@item.Category?.Name</td>
             <td>@item.Price.ToString("C")</td>
             <td>@item.Inventory?.StockQuantity</td>
+            <td>
+                @if (item.IsFeatured)
+                {
+                    <span class="badge bg-warning text-dark">★ Featured</span>
+                }
+                else
+                {
+                    <span class="text-muted">—</span>
+                }
+            </td>
             <td>@(item.IsActive ? "Yes" : "No")</td>
             <td class="text-end">
                 <div class="btn-group me-2" role="group">
@@ -87,7 +107,7 @@
                 @if (currentPage > 1)
                 {
                     <li class="page-item">
-                        <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-categoryId="@selectedCategoryId">Previous</a>
+                        <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-categoryId="@selectedCategoryId" asp-route-featuredOnly="@(featuredOnly ? "true" : null)">Previous</a>
                     </li>
                 }
                 else
@@ -104,7 +124,7 @@
                     if (startPage > 1)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-categoryId="@selectedCategoryId">1</a>
+                            <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-categoryId="@selectedCategoryId" asp-route-featuredOnly="@(featuredOnly ? "true" : null)">1</a>
                         </li>
                         if (startPage > 2)
                         {
@@ -117,7 +137,7 @@
                     for (var i = startPage; i <= endPage; i++)
                     {
                         <li class="page-item @(i == currentPage ? "active" : "")">
-                            <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-categoryId="@selectedCategoryId">@i</a>
+                            <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-categoryId="@selectedCategoryId" asp-route-featuredOnly="@(featuredOnly ? "true" : null)">@i</a>
                         </li>
                     }
 
@@ -130,7 +150,7 @@
                             </li>
                         }
                         <li class="page-item">
-                            <a class="page-link" asp-action="Index" asp-route-page="@totalPages" asp-route-categoryId="@selectedCategoryId">@totalPages</a>
+                            <a class="page-link" asp-action="Index" asp-route-page="@totalPages" asp-route-categoryId="@selectedCategoryId" asp-route-featuredOnly="@(featuredOnly ? "true" : null)">@totalPages</a>
                         </li>
                     }
                 }
@@ -138,7 +158,7 @@
                 @if (currentPage < totalPages)
                 {
                     <li class="page-item">
-                        <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-categoryId="@selectedCategoryId">Next</a>
+                        <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-categoryId="@selectedCategoryId" asp-route-featuredOnly="@(featuredOnly ? "true" : null)">Next</a>
                     </li>
                 }
                 else
