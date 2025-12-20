@@ -5,7 +5,7 @@ using OnlineShop.Data;
 
 namespace OnlineShop.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin", AuthenticationSchemes = "AdminScheme")]
 public class AdminDashboardController : Controller
 {
     private readonly OnlineStoreContext _context;

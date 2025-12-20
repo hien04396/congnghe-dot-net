@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - OnlineShop</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/OnlineShop.styles.css" asp-append-version="true" />
 </head>
@@ -19,45 +20,92 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Store" asp-action="Products">Shop</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Store" asp-action="Categories">Categories</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">Cart</a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
-                        <li class="nav-item d-flex align-items-center">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AdminAuth" asp-action="Login">Admin</a>
-                        </li>
-                        @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Customer"))
-                        {
-                            <li class="nav-item d-flex align-items-center">
-                                <span class="nav-link text-dark">Hello, @User.Identity!.Name</span>
+                    @{
+                        var controllerName = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+                        var isAdminPage = controllerName.StartsWith("Admin", StringComparison.OrdinalIgnoreCase);
+                        
+                        // Check admin authentication explicitly from AdminScheme
+                        var adminAuthResult = await Context.AuthenticateAsync("AdminScheme");
+                        var isAdminAuthenticated = adminAuthResult?.Succeeded == true;
+                        var adminName = adminAuthResult?.Principal?.Identity?.Name;
+                    }
+                    @if (isAdminPage)
+                    {
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="AdminDashboard" asp-action="Index">Dashboard</a>
                             </li>
-                            <li class="nav-item d-flex align-items-center">
-                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-link nav-link text-dark p-0 border-0 d-flex align-items-center">Logout</button>
-                                </form>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="AdminProductCategories" asp-action="Index">Manage Categories</a>
                             </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item d-flex align-items-center">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="AdminProducts" asp-action="Index">Manage Products</a>
                             </li>
-                            <li class="nav-item d-flex align-items-center">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="AdminUsers" asp-action="Index">Manage Admin Accounts</a>
                             </li>
-                        }
-                    </ul>
+                        </ul>
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
+                            @if (isAdminAuthenticated)
+                            {
+                                <li class="nav-item d-flex align-items-center">
+                                    <span class="nav-link text-dark">Admin: @adminName</span>
+                                </li>
+                                <li class="nav-item d-flex align-items-center">
+                                    <form asp-controller="AdminAuth" asp-action="Logout" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-link nav-link text-dark p-0 border-0 d-flex align-items-center">Logout</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Store" asp-action="Products">Shop</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Store" asp-action="Categories">Categories</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">Cart</a>
+                            </li>
+                            @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Customer"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Orders</a>
+                                </li>
+                            }
+                        </ul>
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
+                            @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Customer"))
+                            {
+                                <li class="nav-item d-flex align-items-center">
+                                    <span class="nav-link text-dark">Hello, @User.Identity!.Name</span>
+                                </li>
+                                <li class="nav-item d-flex align-items-center">
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-link nav-link text-dark p-0 border-0 d-flex align-items-center">Logout</button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item d-flex align-items-center">
+                                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+                                </li>
+                                <li class="nav-item d-flex align-items-center">
+                                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+                                </li>
+                            }
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>

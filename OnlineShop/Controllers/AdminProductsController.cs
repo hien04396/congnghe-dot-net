@@ -7,7 +7,7 @@ using OnlineShop.Models;
 
 namespace OnlineShop.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin", AuthenticationSchemes = "AdminScheme")]
 public class AdminProductsController : Controller
 {
     private readonly OnlineStoreContext _context;
@@ -17,8 +17,10 @@ public class AdminProductsController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index(int? categoryId = null)
+    public async Task<IActionResult> Index(int? categoryId = null, int page = 1)
     {
+        const int pageSize = 15;
+        
         ViewData["Categories"] = new SelectList(await _context.ProductCategories.OrderBy(c => c.Name).ToListAsync(), "Id", "Name");
 
         var query = _context.Products
@@ -32,9 +34,24 @@ public class AdminProductsController : Controller
             ViewData["SelectedCategoryId"] = categoryId.Value;
         }
 
+        query = query.OrderByDescending(p => p.CreatedAt);
+
+        // Get total count for pagination
+        var totalItems = await query.CountAsync();
+        var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+        
+        // Ensure page is within valid range
+        page = Math.Max(1, Math.Min(page, Math.Max(1, totalPages)));
+
         var products = await query
-            .OrderBy(p => p.Name)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+
+        // Pass pagination info to view
+        ViewData["CurrentPage"] = page;
+        ViewData["TotalPages"] = totalPages;
+        ViewData["TotalItems"] = totalItems;
 
         return View(products);
     }

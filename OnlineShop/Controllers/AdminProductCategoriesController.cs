@@ -6,7 +6,7 @@ using OnlineShop.Models;
 
 namespace OnlineShop.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin", AuthenticationSchemes = "AdminScheme")]
 public class AdminProductCategoriesController : Controller
 {
     private readonly OnlineStoreContext _context;
@@ -16,11 +16,30 @@ public class AdminProductCategoriesController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1)
     {
-        var categories = await _context.ProductCategories
-            .OrderBy(c => c.Name)
+        const int pageSize = 15;
+
+        var query = _context.ProductCategories
+            .OrderByDescending(c => c.CreatedAt);
+
+        // Get total count for pagination
+        var totalItems = await query.CountAsync();
+        var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+        
+        // Ensure page is within valid range
+        page = Math.Max(1, Math.Min(page, Math.Max(1, totalPages)));
+
+        var categories = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+
+        // Pass pagination info to view
+        ViewData["CurrentPage"] = page;
+        ViewData["TotalPages"] = totalPages;
+        ViewData["TotalItems"] = totalItems;
+
         return View(categories);
     }
 

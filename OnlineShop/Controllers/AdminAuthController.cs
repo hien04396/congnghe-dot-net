@@ -19,9 +19,11 @@ public class AdminAuthController : Controller
 
     [HttpGet]
     [Route("admin")]
-    public IActionResult Login(string? returnUrl = null)
+    public async Task<IActionResult> Login(string? returnUrl = null)
     {
-        if (User.IsInRole("Admin"))
+        // Check AdminScheme authentication explicitly
+        var adminAuthResult = await HttpContext.AuthenticateAsync("AdminScheme");
+        if (adminAuthResult?.Succeeded == true)
         {
             return RedirectToAction("Index", "AdminDashboard");
         }
@@ -74,10 +76,10 @@ public class AdminAuthController : Controller
             new Claim(ClaimTypes.Role, "Admin")
         };
 
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var identity = new ClaimsIdentity(claims, "AdminScheme");
         var principal = new ClaimsPrincipal(identity);
 
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        await HttpContext.SignInAsync("AdminScheme", principal);
 
         if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
         {
@@ -88,11 +90,10 @@ public class AdminAuthController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return RedirectToAction("Login");
+        await HttpContext.SignOutAsync("AdminScheme");
+        return Redirect("/admin");
     }
 }
 

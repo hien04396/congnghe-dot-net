@@ -55,7 +55,7 @@ public class CartController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [Authorize(Roles = "Customer")]
+    [Authorize(Roles = "Customer", AuthenticationSchemes = "CustomerScheme")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Checkout()

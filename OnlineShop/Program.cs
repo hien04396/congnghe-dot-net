@@ -12,11 +12,24 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<OnlineStoreContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+// Configure separate authentication schemes for Admin and Customer
+// Set CustomerScheme as default since most of the site is for customers
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = "CustomerScheme";
+        options.DefaultChallengeScheme = "CustomerScheme";
+    })
+    .AddCookie("AdminScheme", options =>
+    {
+        options.LoginPath = "/admin";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.Cookie.Name = "AdminAuth";
+    })
+    .AddCookie("CustomerScheme", options =>
     {
         options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/AccessDenied";
+        options.Cookie.Name = "CustomerAuth";
     });
 
 builder.Services.AddSession();
@@ -38,9 +51,9 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseSession();

@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace OnlineShop.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin", AuthenticationSchemes = "AdminScheme")]
 public class AdminProductReviewsController : Controller
 {
     private readonly OnlineStoreContext _context;

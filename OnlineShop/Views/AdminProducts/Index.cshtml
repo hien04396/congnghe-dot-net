@@ -4,6 +4,9 @@
     ViewData["Title"] = "Products";
     var categories = (Microsoft.AspNetCore.Mvc.Rendering.SelectList)ViewData["Categories"]!;
     var selectedCategoryId = ViewData["SelectedCategoryId"] as int?;
+    var currentPage = (int)ViewData["CurrentPage"]!;
+    var totalPages = (int)ViewData["TotalPages"]!;
+    var totalItems = (int)ViewData["TotalItems"]!;
 }
 
 <h2>Products</h2>
@@ -52,10 +55,89 @@
                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
                 <a asp-controller="AdminProductImages" asp-action="Index" asp-route-productId="@item.Id" class="btn btn-sm btn-outline-primary">Images</a>
+                <a asp-controller="AdminProductInventory" asp-action="ManageStock" asp-route-productId="@item.Id" class="btn btn-sm btn-outline-success">
+                    <i class="bi bi-box-seam"></i> Stock
+                </a>
             </td>
         </tr>
     }
     </tbody>
 </table>
+
+@if (totalPages > 1)
+{
+    <nav aria-label="Product pagination">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="text-muted">
+                Showing page @currentPage of @totalPages (Total: @totalItems products)
+            </div>
+            <ul class="pagination mb-0">
+                @if (currentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-categoryId="@selectedCategoryId">Previous</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">Previous</span>
+                    </li>
+                }
+
+                @{
+                    var startPage = Math.Max(1, currentPage - 2);
+                    var endPage = Math.Min(totalPages, currentPage + 2);
+
+                    if (startPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-categoryId="@selectedCategoryId">1</a>
+                        </li>
+                        if (startPage > 2)
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        }
+                    }
+
+                    for (var i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-categoryId="@selectedCategoryId">@i</a>
+                        </li>
+                    }
+
+                    if (endPage < totalPages)
+                    {
+                        if (endPage < totalPages - 1)
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        }
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-page="@totalPages" asp-route-categoryId="@selectedCategoryId">@totalPages</a>
+                        </li>
+                    }
+                }
+
+                @if (currentPage < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-categoryId="@selectedCategoryId">Next</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">Next</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </nav>
+}
 
 

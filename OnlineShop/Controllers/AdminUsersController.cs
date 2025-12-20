@@ -6,7 +6,7 @@ using OnlineShop.Models;
 
 namespace OnlineShop.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin", AuthenticationSchemes = "AdminScheme")]
 public class AdminUsersController : Controller
 {
     private readonly OnlineStoreContext _context;

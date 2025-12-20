@@ -99,12 +99,12 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "CustomerScheme")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await HttpContext.SignOutAsync("CustomerScheme");
         return RedirectToAction("Index", "Home");
     }
 
@@ -122,10 +122,10 @@ public class AccountController : Controller
             new Claim(ClaimTypes.Role, "Customer")
         };
 
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var identity = new ClaimsIdentity(claims, "CustomerScheme");
         var principal = new ClaimsPrincipal(identity);
 
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        await HttpContext.SignInAsync("CustomerScheme", principal);
     }
 }
 

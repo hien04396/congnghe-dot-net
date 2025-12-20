@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace OnlineShop.Controllers;
 
-[Authorize(Roles = "Customer")]
+[Authorize(Roles = "Customer", AuthenticationSchemes = "CustomerScheme")]
 public class OrdersController : Controller
 {
     private readonly OnlineStoreContext _context;

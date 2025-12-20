@@ -6,7 +6,7 @@ using OnlineShop.Models;
 
 namespace OnlineShop.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin", AuthenticationSchemes = "AdminScheme")]
 public class AdminProductImagesController : Controller
 {
     private readonly OnlineStoreContext _context;
@@ -45,6 +45,14 @@ public class AdminProductImagesController : Controller
             return RedirectToAction(nameof(Index), new { productId });
         }
 
+        // Validate URL format
+        if (!Uri.TryCreate(imageUrl.Trim(), UriKind.Absolute, out var uriResult) ||
+            (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
+        {
+            TempData["Error"] = "Please enter a valid URL (must start with http:// or https://).";
+            return RedirectToAction(nameof(Index), new { productId });
+        }
+
         if (isPrimary)
         {
             var existing = await _context.ProductImages
@@ -63,7 +71,8 @@ public class AdminProductImagesController : Controller
             IsPrimary = isPrimary
         });
         await _context.SaveChangesAsync();
-
+        
+        TempData["Success"] = "Image added successfully.";
         return RedirectToAction(nameof(Index), new { productId });
     }
 

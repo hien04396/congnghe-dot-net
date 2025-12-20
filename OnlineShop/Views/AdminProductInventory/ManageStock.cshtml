@@ -1,0 +1,219 @@
+@model OnlineShop.Models.ProductInventory
+
+@{
+    ViewData["Title"] = "Manage Stock";
+    var stockStatus = Model.StockQuantity == 0 ? "danger" : (Model.StockQuantity <= 10 ? "warning" : "success");
+    var stockLabel = Model.StockQuantity == 0 ? "Out of Stock" : (Model.StockQuantity <= 10 ? "Low Stock" : "In Stock");
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-box-seam"></i> Manage Stock: @Model.Product?.Name</h2>
+            <a asp-controller="AdminProducts" asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Products
+            </a>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle"></i> @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle"></i> @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="row">
+            <!-- Stock Information Card -->
+            <div class="col-md-6">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-@stockStatus text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-info-circle"></i> Current Stock Status
+                        </h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <span class="badge bg-@stockStatus fs-6 mb-2">@stockLabel</span>
+                        </div>
+                        <div class="display-1 fw-bold text-@stockStatus mb-3">
+                            @Model.StockQuantity
+                        </div>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-clock"></i> Last Updated: 
+                            <strong>@Model.LastUpdated.ToLocalTime().ToString("MMM dd, yyyy HH:mm")</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Product Information -->
+                <div class="card mt-4 shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-box"></i> Product Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Product Name:</dt>
+                            <dd class="col-sm-8">@Model.Product?.Name</dd>
+
+                            <dt class="col-sm-4">Price:</dt>
+                            <dd class="col-sm-8">@Model.Product?.Price.ToString("C")</dd>
+
+                            <dt class="col-sm-4">Category:</dt>
+                            <dd class="col-sm-8">@Model.Product?.Category?.Name</dd>
+
+                            <dt class="col-sm-4">Status:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.Product?.IsActive == true)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactive</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stock Management Controls -->
+            <div class="col-md-6">
+                <!-- Quick Adjustments -->
+                <div class="card shadow-lg mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-lightning"></i> Quick Adjustments
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- Remove Stock -->
+                            <div class="col-6">
+                                <h6 class="text-danger">
+                                    <i class="bi bi-dash-circle"></i> Remove Stock
+                                </h6>
+                                <form asp-action="ManageStock" method="post" class="d-grid gap-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@Model.Id" />
+                                    <input type="hidden" name="stockQuantity" value="@Model.StockQuantity" />
+                                    <input type="hidden" name="adjustment" value="-50" />
+                                    <button type="submit" class="btn btn-outline-danger" @(Model.StockQuantity < 50 ? "disabled" : "")>
+                                        <i class="bi bi-dash-circle-fill"></i> -50
+                                    </button>
+                                </form>
+                                <form asp-action="ManageStock" method="post" class="d-grid gap-2 mt-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@Model.Id" />
+                                    <input type="hidden" name="stockQuantity" value="@Model.StockQuantity" />
+                                    <input type="hidden" name="adjustment" value="-10" />
+                                    <button type="submit" class="btn btn-outline-danger" @(Model.StockQuantity < 10 ? "disabled" : "")>
+                                        <i class="bi bi-dash-circle"></i> -10
+                                    </button>
+                                </form>
+                                <form asp-action="ManageStock" method="post" class="d-grid gap-2 mt-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@Model.Id" />
+                                    <input type="hidden" name="stockQuantity" value="@Model.StockQuantity" />
+                                    <input type="hidden" name="adjustment" value="-1" />
+                                    <button type="submit" class="btn btn-outline-danger" @(Model.StockQuantity == 0 ? "disabled" : "")>
+                                        <i class="bi bi-dash"></i> -1
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Add Stock -->
+                            <div class="col-6">
+                                <h6 class="text-success">
+                                    <i class="bi bi-plus-circle"></i> Add Stock
+                                </h6>
+                                <form asp-action="ManageStock" method="post" class="d-grid gap-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@Model.Id" />
+                                    <input type="hidden" name="stockQuantity" value="@Model.StockQuantity" />
+                                    <input type="hidden" name="adjustment" value="50" />
+                                    <button type="submit" class="btn btn-outline-success">
+                                        <i class="bi bi-plus-circle-fill"></i> +50
+                                    </button>
+                                </form>
+                                <form asp-action="ManageStock" method="post" class="d-grid gap-2 mt-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@Model.Id" />
+                                    <input type="hidden" name="stockQuantity" value="@Model.StockQuantity" />
+                                    <input type="hidden" name="adjustment" value="10" />
+                                    <button type="submit" class="btn btn-outline-success">
+                                        <i class="bi bi-plus-circle"></i> +10
+                                    </button>
+                                </form>
+                                <form asp-action="ManageStock" method="post" class="d-grid gap-2 mt-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@Model.Id" />
+                                    <input type="hidden" name="stockQuantity" value="@Model.StockQuantity" />
+                                    <input type="hidden" name="adjustment" value="1" />
+                                    <button type="submit" class="btn btn-outline-success">
+                                        <i class="bi bi-plus"></i> +1
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Set Exact Stock -->
+                <div class="card shadow-lg">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-input-cursor"></i> Set Exact Stock
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="ManageStock" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="adjustment" value="0" />
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Enter exact quantity:</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-box-seam"></i>
+                                    </span>
+                                    <input type="number" 
+                                           name="stockQuantity" 
+                                           class="form-control form-control-lg" 
+                                           value="@Model.StockQuantity" 
+                                           min="0" 
+                                           required />
+                                    <span class="input-group-text">units</span>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success btn-lg w-100">
+                                <i class="bi bi-check-circle"></i> Update Stock
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+    </script>
+}
+
