@@ -44,7 +44,7 @@ public class StoreController : Controller
 
         var totalCount = await query.CountAsync();
         var products = await query
-            .OrderBy(p => p.Name)
+            .OrderByDescending(p => p.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Include(p => p.Images)

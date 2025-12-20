@@ -3,11 +3,11 @@
 USE online_store;
 
 INSERT INTO ProductCategories (Name, Description, CreatedAt) VALUES
-('Shirts', 'Casual and formal shirts', NOW()),
-('Pants', 'Jeans, chinos and more', NOW()),
-('Jackets', 'Light and warm jackets', NOW()),
-('Dresses', 'Casual and party dresses', NOW()),
-('Skirts', 'Skirts for all styles', NOW());
+('Áo', 'Áo thun, áo sơ mi, áo kiểu ', NOW()),
+('Quần', 'Jean, quần tây, quần short', NOW()),
+('Áo khoác', 'Áo khoác, áo vest, áo bomber', NOW()),
+('Đầm', 'Đầm, đầm váy, đầm ngắn', NOW()),
+('Chân váy', 'Chân váy, chân váy ngắn, chân váy dài', NOW());
 
 INSERT INTO AdminUsers (Username, Password, IsDefault) VALUES
 ('admin', 'admin', 1),
@@ -18,9 +18,9 @@ INSERT INTO CustomerUsers (Username, Password, CreatedAt) VALUES
 ('bob', 'bob123', NOW());
 
 -- Shirts (Category 1) - 25 products
-INSERT INTO Products (Name, Description, Price, IsActive, IsFeatured, CreatedAt, CategoryId) VALUES
-('Basic White Shirt', 'Simple cotton shirt, perfect for everyday wear.', 19.99, 1, 0, NOW(), 1),
-('Classic Blue Shirt', 'Timeless blue button-down shirt for office or casual wear.', 24.99, 1, 0, NOW(), 1),
+INSERT INTO Products (Name, Description, Price, IsActive, IsFeatured, CreatedAt, CategoryId, ProductImageUrl) VALUES
+('Faux leather top', 'High neck, sleeveless top with defined seams and a back zip fastening.', 19.99, 1, 0, NOW(), 1, 'https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/469871/item/vngoods_06_469871_3x4.jpg?width=423'),
+('ÁShimmer-efect rufled top', 'Top with a round neck and sleeveless design.', 24.99, 1, 0, NOW(), 1),
 ('Striped Long Sleeve', 'Comfortable striped shirt with long sleeves.', 27.99, 1, 0, NOW(), 1),
 ('Polo Shirt Navy', 'Classic polo shirt in navy blue.', 22.99, 1, 0, NOW(), 1),
 ('Oxford Button Down', 'Premium oxford cotton shirt, perfect for business.', 34.99, 1, 0, NOW(), 1),
@@ -171,6 +171,9 @@ SELECT Id, 'https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/469871/item/vngoods_0
 
 INSERT INTO ProductImages (ProductId, ImageUrl, IsPrimary)
 SELECT Id, 'https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/469871/item/vngoods_06_469871_3x4.jpg?width=423', 0 FROM Products;
+
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/6786/1f31/66214c018532/2c72e8c8a398/02180409808-a3/02180409808-a3.jpg?ts=1748875164825&w=378' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Mini Skirt') AND IsPrimary = 1;
 
 -- Reviews: 5-10 reviews per product with varying ratings (1-5 stars)
 -- Create a temporary table to help generate multiple reviews per product

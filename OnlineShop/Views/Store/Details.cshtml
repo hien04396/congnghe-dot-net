@@ -7,11 +7,15 @@
 
 <div class="row">
     <div class="col-md-5">
-        <img src="@mainImage" class="img-fluid mb-3" alt="@Model.Product.Name" />
+        <img id="mainProductImage" src="@mainImage" class="img-fluid mb-3" alt="@Model.Product.Name" />
         <div class="d-flex flex-wrap gap-2">
             @foreach (var img in Model.Images)
             {
-                <img src="@img.ImageUrl" alt="@Model.Product.Name" style="height:60px;border:1px solid #ddd;padding:2px;" />
+                <img src="@img.ImageUrl" 
+                     alt="@Model.Product.Name" 
+                     class="product-thumbnail @(img.IsPrimary ? "active-thumbnail" : "")" 
+                     style="height:60px;border:2px solid #ddd;padding:2px;cursor:pointer;transition:border-color 0.2s;" 
+                     onclick="changeMainImage('@img.ImageUrl', this)" />
             }
         </div>
     </div>
@@ -79,4 +83,29 @@ else
     </ul>
 }
 
-
+@section Scripts {
+    <script>
+        function changeMainImage(imageUrl, thumbnailElement) {
+            // Update the main image source
+            document.getElementById('mainProductImage').src = imageUrl;
+            
+            // Remove active class from all thumbnails
+            document.querySelectorAll('.product-thumbnail').forEach(function(thumb) {
+                thumb.classList.remove('active-thumbnail');
+                thumb.style.borderColor = '#ddd';
+            });
+            
+            // Add active class to clicked thumbnail
+            thumbnailElement.classList.add('active-thumbnail');
+            thumbnailElement.style.borderColor = '#0d6efd';
+        }
+        
+        // Initialize: highlight the primary image thumbnail on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            var activeThumbnail = document.querySelector('.active-thumbnail');
+            if (activeThumbnail) {
+                activeThumbnail.style.borderColor = '#0d6efd';
+            }
+        });
+    </script>
+}
