@@ -1,0 +1,36 @@
+-------------------------------------------------------------------------------
+Test set: tests.CartTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 20.20 s <<< FAILURE! -- in tests.CartTest
+tests.CartTest.testUpdateCartQuantity -- Time elapsed: 2.387 s <<< ERROR!
+org.openqa.selenium.StaleElementReferenceException: 
+stale element reference: stale element not found
+  (Session info: chrome=151.0.7922.170)
+For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Build info: version: '4.27.0', revision: 'd6e718d134'
+System info: os.name: 'Mac OS X', os.arch: 'aarch64', os.version: '14.6.1', java.version: '22.0.1'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [1db5d29e6311a78bd835e6f4b28c2faf, getElementAttribute {id=f.1CA588A175A0D0C96C0123317425995D.d.78647B3882E0030F1A1EABB50343CE00.e.38, name=value}]
+Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 151.0.7922.170, chrome: {chromedriverVersion: 151.0.7922.138 (41fa8244239..., userDataDir: /var/folders/7d/gsslk7z116l...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:54973}, goog:processID: 70054, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: mac, proxy: Proxy(), se:cdp: ws://localhost:54973/devtoo..., se:cdpVersion: 151.0.7922.170, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Element: [[ChromeDriver: chrome on mac (1db5d29e6311a78bd835e6f4b28c2faf)] -> css selector: input[name='quantity']]
+Session ID: 1db5d29e6311a78bd835e6f4b28c2faf
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at org.openqa.selenium.remote.ErrorCodec.decode(ErrorCodec.java:167)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:138)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:50)
+	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:190)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.invokeExecute(DriverCommandExecutor.java:216)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:174)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
+	at org.openqa.selenium.remote.RemoteWebElement.execute(RemoteWebElement.java:223)
+	at org.openqa.selenium.remote.RemoteWebElement.getAttribute(RemoteWebElement.java:149)
+	at org.openqa.selenium.support.ui.ExpectedConditions$31.apply(ExpectedConditions.java:863)
+	at org.openqa.selenium.support.ui.ExpectedConditions$31.apply(ExpectedConditions.java:857)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:203)
+	at tests.CartTest.testUpdateCartQuantity(CartTest.java:80)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

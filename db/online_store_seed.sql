@@ -3,11 +3,11 @@
 USE online_store;
 
 INSERT INTO ProductCategories (Name, Description, CreatedAt) VALUES
-('Áo', 'Áo thun, áo sơ mi, áo kiểu ', NOW()),
-('Quần', 'Jean, quần tây, quần short', NOW()),
-('Áo khoác', 'Áo khoác, áo vest, áo bomber', NOW()),
-('Đầm', 'Đầm, đầm váy, đầm ngắn', NOW()),
-('Chân váy', 'Chân váy, chân váy ngắn, chân váy dài', NOW());
+('Tops', 'T-shirts, shirts, blouses', NOW()),
+('Pants', 'Jeans, trousers, shorts', NOW()),
+('Outerwear', 'Jackets, blazers, bombers', NOW()),
+('Dresses', 'Dresses, mini dresses, short dresses', NOW()),
+('Skirts', 'Skirts, mini skirts, long skirts', NOW());
 
 INSERT INTO AdminUsers (Username, Password, IsDefault) VALUES
 ('admin', 'admin', 1),
@@ -18,8 +18,8 @@ INSERT INTO CustomerUsers (Username, Password, CreatedAt) VALUES
 ('bob', 'bob123', NOW());
 
 -- Shirts (Category 1) - 25 products
-INSERT INTO Products (Name, Description, Price, IsActive, IsFeatured, CreatedAt, CategoryId, ProductImageUrl) VALUES
-('Faux leather top', 'High neck, sleeveless top with defined seams and a back zip fastening.', 19.99, 1, 0, NOW(), 1, 'https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/469871/item/vngoods_06_469871_3x4.jpg?width=423'),
+INSERT INTO Products (Name, Description, Price, IsActive, IsFeatured, CreatedAt, CategoryId) VALUES
+('Faux leather top', 'High neck, sleeveless top with defined seams and a back zip fastening.', 19.99, 1, 0, NOW(), 1),
 ('ÁShimmer-efect rufled top', 'Top with a round neck and sleeveless design.', 24.99, 1, 0, NOW(), 1),
 ('Striped Long Sleeve', 'Comfortable striped shirt with long sleeves.', 27.99, 1, 0, NOW(), 1),
 ('Polo Shirt Navy', 'Classic polo shirt in navy blue.', 22.99, 1, 0, NOW(), 1),
@@ -172,8 +172,39 @@ SELECT Id, 'https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/469871/item/vngoods_0
 INSERT INTO ProductImages (ProductId, ImageUrl, IsPrimary)
 SELECT Id, 'https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/469871/item/vngoods_06_469871_3x4.jpg?width=423', 0 FROM Products;
 
+-- Update the primary image for some products
 UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/6786/1f31/66214c018532/2c72e8c8a398/02180409808-a3/02180409808-a3.jpg?ts=1748875164825&w=378' 
 WHERE ProductId = (SELECT Id from Products where Name = 'Mini Skirt') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/3ede/5fbd/b45746808484/f78e083f04b7/08312938101-p/08312938101-p.jpg?ts=1752236064722&w=285' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Shimmer-efect rufled top') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/20a3/2d81/554f43228def/27f117f39365/05107253251-a2/05107253251-a2.jpg?ts=1752754138084&w=383' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Striped Long Sleeve') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/a0d0/3fbe/9e5c4c8abeeb/e37bde50fb99/06895288727-p/06895288727-p.jpg?ts=1757505054957&w=383' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Polo Shirt Navy') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/6866/6fd5/85124363886e/88fdc0ef5b97/03897183800-p/03897183800-p.jpg?ts=1755855889059&w=383' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Oxford Button Down') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/d4d8/ac7e/67774f3093ff/525b09dd3ebd/08741231423-a5/08741231423-a5.jpg?ts=1755185608904&w=383' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Flannel Plaid Shirt') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/b9fb/7063/b8f640d6be4b/e7b8c753b47d/09139967330-p/09139967330-p.jpg?ts=1761753792683&w=383' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Denim Shirt') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/576e/3d88/d8634002960d/7b7576873069/04813845700-p/04813845700-p.jpg?ts=1756286791209&w=383' 
+WHERE ProductId = (SELECT Id from Products where Name = 'T-Shirt Gray') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/7897/a193/2c6f48398153/921e193a77b5/01165890712-a4/01165890712-a4.jpg?ts=1759497139214&w=383' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Henley Shirt') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/bcf3/e0e3/e26c48afb09b/5366bedcd371/05063845802-e1/05063845802-e1.jpg?ts=1757946497824&w=383' 
+WHERE ProductId = (SELECT Id from Products where Name = 'V-Neck T-Shirt') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/7897/a193/2c6f48398153/921e193a77b5/01165890712-a4/01165890712-a4.jpg?ts=1759497139214&w=383' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Long Sleeve Tee') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/93a4/4e7c/59d44a4388bd/f3e7ea455f05/08286005005-p/08286005005-p.jpg?ts=1753108698962&w=383' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Crew Neck Sweatshirt') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/750f/1fcb/968f435b9533/37c337de3226/08252327250-a1/08252327250-a1.jpg?ts=1752656958896&w=383' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Tank Top White') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/73c8/59c6/e009457cb220/b553e5fb7937/04365032441-p/04365032441-p.jpg?ts=1754057335315&w=515' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Blue Denim Jeans') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/de82/8d8c/58ec41e9ac3f/e2b0ec8f9bdc/03121716800-p/03121716800-p.jpg?ts=1762357920877&w=285' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Black Hoodie Jacket') AND IsPrimary = 1;
+UPDATE ProductImages SET ImageUrl = 'https://static.zara.net/assets/public/7385/19fa/96d5426cb2e9/26f1f8b0988d/08696440121-p/08696440121-p.jpg?ts=1757679895615&w=285' 
+WHERE ProductId = (SELECT Id from Products where Name = 'Summer Floral Dress') AND IsPrimary = 1;
 
 -- Reviews: 5-10 reviews per product with varying ratings (1-5 stars)
 -- Create a temporary table to help generate multiple reviews per product
@@ -253,7 +284,7 @@ DROP TEMPORARY TABLE IF EXISTS temp_numbers;
 
 -- Mark 4 products as featured (1 from each of the first 4 categories)
 SET SQL_SAFE_UPDATES = 0;
-UPDATE Products SET IsFeatured = 1 WHERE Name = 'Basic White Shirt';      -- Shirts (Category 1)
+UPDATE Products SET IsFeatured = 1 WHERE Name = 'Faux leather top';      -- Shirts (Category 1)
 UPDATE Products SET IsFeatured = 1 WHERE Name = 'Blue Denim Jeans';        -- Pants (Category 2)
 UPDATE Products SET IsFeatured = 1 WHERE Name = 'Black Hoodie Jacket';     -- Jackets (Category 3)
 UPDATE Products SET IsFeatured = 1 WHERE Name = 'Summer Floral Dress';     -- Dresses (Category 4)
@@ -261,7 +292,7 @@ SET SQL_SAFE_UPDATES = 1;
 
 -- Sample promos (amount off) for some products
 INSERT INTO ProductPromos (ProductId, AmountOff, StartDate, EndDate, IsActive) VALUES
-((SELECT Id FROM Products WHERE Name = 'Basic White Shirt'), 5.00, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 1),
+((SELECT Id FROM Products WHERE Name = 'Faux leather top'), 5.00, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 1),
 ((SELECT Id FROM Products WHERE Name = 'Blue Denim Jeans'), 7.50, NOW(), DATE_ADD(NOW(), INTERVAL 15 DAY), 1),
 ((SELECT Id FROM Products WHERE Name = 'Black Hoodie Jacket'), 10.00, NOW(), DATE_ADD(NOW(), INTERVAL 20 DAY), 1),
 ((SELECT Id FROM Products WHERE Name = 'Little Black Dress'), 12.00, NOW(), DATE_ADD(NOW(), INTERVAL 25 DAY), 1),

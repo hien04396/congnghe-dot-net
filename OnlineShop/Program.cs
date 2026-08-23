@@ -5,6 +5,13 @@ using OnlineShop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// --no-launch-profile chạy môi trường Production: CSS isolation (OnlineShop.styles.css)
+// không được phục vụ trừ khi bật static web assets.
+if (!builder.Environment.IsDevelopment())
+{
+    builder.WebHost.UseStaticWebAssets();
+}
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -60,6 +67,7 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseStaticFiles();
 app.MapStaticAssets();
 
 app.MapControllerRoute(
