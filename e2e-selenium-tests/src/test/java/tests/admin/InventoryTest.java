@@ -50,4 +50,21 @@ public class InventoryTest extends InKetQuaAdmin {
         assertTrue(driver.getPageSource().contains("Stock updated successfully"));
         assertTrue(driver.getPageSource().contains("25"));
     }
+
+    @Test
+    @DisplayName("Không cho tồn kho âm khi nhập số lượng")
+    void testRejectNegativeStockQuantity() {
+        driver.get(CauHinh.BASE_URL + "/AdminProducts");
+        driver.findElement(By.partialLinkText("Stock")).click();
+
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript(
+            "var el = document.querySelector(\"input[type='number'][name='stockQuantity']\");"
+            + "el.removeAttribute('min'); el.value = '-1';"
+        );
+        CauHinh.bamNut(driver, "Update Stock");
+
+        driver.findElement(By.cssSelector(".alert-danger"));
+        assertTrue(driver.getPageSource().contains("Stock quantity cannot be negative"));
+    }
 }

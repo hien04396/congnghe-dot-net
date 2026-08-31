@@ -89,7 +89,7 @@ public class ShopTest extends InKetQua {
         // Mở trang Shop
         driver.get(CauHinh.BASE_URL + "/Store/Products");
 
-        // Chọn danh mục thứ 2 (bỏ All categories)
+        // Chọn danh mục thứ 2
         new Select(driver.findElement(By.name("categoryId"))).selectByIndex(1);
 
         // Nhấn Filter

@@ -49,4 +49,17 @@ public class ProductImageTest extends InKetQuaAdmin {
         driver.findElement(By.xpath("//*[contains(text(),'" + imageUrl + "')]"));
         assertTrue(driver.getPageSource().contains(imageUrl));
     }
+
+    @Test
+    @DisplayName("Không nhận URL hình ảnh sai")
+    void testRejectRelativeImageUrl() {
+        driver.get(CauHinh.BASE_URL + "/AdminProducts");
+        driver.findElement(By.partialLinkText("Images")).click();
+
+        driver.findElement(By.name("imageUrl")).sendKeys("/images/sample-placeholder.png");
+        driver.findElement(By.xpath("//button[contains(.,'Add image')]")).click();
+
+        driver.findElement(By.cssSelector(".alert-danger"));
+        assertTrue(driver.getPageSource().contains("must start with http:// or https://"));
+    }
 }

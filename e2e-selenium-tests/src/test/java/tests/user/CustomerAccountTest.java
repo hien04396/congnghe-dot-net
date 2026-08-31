@@ -94,10 +94,31 @@ public class CustomerAccountTest extends InKetQua {
         driver.findElement(By.id("Password")).sendKeys("sai-mat-khau");
         CauHinh.bamNut(driver, "Login");
 
-        // Đợi thông báo lỗi hiện ra (trang cần tải lại sau khi gửi form)
         driver.findElement(By.xpath("//*[contains(.,'Invalid username or password')]"));
         assertTrue(driver.getCurrentUrl().contains("Account/Login"));
         assertFalse(driver.getPageSource().contains("Hello, " + username));
+    }
+
+    @Test
+    @DisplayName("Đăng ký khi username đã tồn tại")
+    void testRegisterWithDuplicateUsername() {
+        String username = "user" + System.currentTimeMillis();
+
+        // Đăng ký lần 1 thành công
+        CauHinh.dangKyKhach(driver, username, "123456");
+        CauHinh.dangXuatKhach(driver);
+
+        // Đăng ký lại cùng username
+        driver.get(CauHinh.BASE_URL + "/Account/Register");
+        driver.findElement(By.id("Username")).sendKeys(username);
+        driver.findElement(By.id("Password")).sendKeys("123456");
+        driver.findElement(By.id("ConfirmPassword")).sendKeys("123456");
+        CauHinh.bamNut(driver, "Register");
+
+        // Vẫn ở trang đăng ký, báo username đã được dùng
+        driver.findElement(By.xpath("//*[contains(.,'Username is already taken')]"));
+        assertTrue(driver.getCurrentUrl().contains("Register"));
+        assertTrue(driver.getPageSource().contains("Username is already taken"));
     }
 
     @Test
