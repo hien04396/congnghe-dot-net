@@ -42,13 +42,10 @@ public class PromoTest extends InKetQuaAdmin {
         // Bấm Create promo
         driver.findElement(By.linkText("Create promo")).click();
 
-        // Điền số tiền giảm và ngày (dùng JavaScript vì ô ngày kiểu datetime-local khá khó nhập)
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("document.getElementById('AmountOff').value = '8';");
         js.executeScript("document.getElementById('StartDate').value = '2026-08-23T10:00';");
         js.executeScript("document.getElementById('EndDate').value = '2026-08-30T10:00';");
-
-        // Gửi form (tránh lỗi kiểm tra HTML5 của ô ngày)
         js.executeScript("document.getElementById('AmountOff').form.submit();");
 
         // Đợi quay về danh sách khuyến mãi

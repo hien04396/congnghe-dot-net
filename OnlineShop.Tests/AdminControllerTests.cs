@@ -5,10 +5,6 @@ using OnlineShop.Tests.Helpers;
 
 namespace OnlineShop.Tests;
 
-/// <summary>
-/// Module test AdminUsersController — bảo vệ tài khoản mặc định.
-/// Source: OnlineShop/Controllers/AdminUsersController.cs
-/// </summary>
 public class AdminUsersControllerTests
 {
     [Fact]
@@ -108,10 +104,6 @@ public class AdminUsersControllerTests
     }
 }
 
-/// <summary>
-/// Module test AdminProductInventoryController — không cho tồn kho âm.
-/// Source: OnlineShop/Controllers/AdminProductInventoryController.cs
-/// </summary>
 public class AdminProductInventoryControllerTests
 {
     [Fact]
@@ -194,10 +186,6 @@ public class AdminProductInventoryControllerTests
     }
 }
 
-/// <summary>
-/// Module test AdminProductImagesController — URL bắt buộc http/https.
-/// Source: OnlineShop/Controllers/AdminProductImagesController.cs
-/// </summary>
 public class AdminProductImagesControllerTests
 {
     [Fact]
@@ -270,10 +258,6 @@ public class AdminProductImagesControllerTests
     }
 }
 
-/// <summary>
-/// Module test AdminProductPromosController — chỉ một promo active / sản phẩm.
-/// Source: OnlineShop/Controllers/AdminProductPromosController.cs
-/// </summary>
 public class AdminProductPromosControllerTests
 {
     [Fact]

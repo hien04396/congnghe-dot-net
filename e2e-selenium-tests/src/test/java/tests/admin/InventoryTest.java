@@ -57,7 +57,6 @@ public class InventoryTest extends InKetQuaAdmin {
         driver.get(CauHinh.BASE_URL + "/AdminProducts");
         driver.findElement(By.partialLinkText("Stock")).click();
 
-        // Form Set Exact Stock có min=0 nên phải bỏ min rồi gửi -1 để tới được server.
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript(
             "var el = document.querySelector(\"input[type='number'][name='stockQuantity']\");"

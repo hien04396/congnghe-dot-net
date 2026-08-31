@@ -44,7 +44,7 @@ public class ProductTest extends InKetQuaAdmin {
         // Nhập mô tả
         driver.findElement(By.id("Description")).sendKeys("San pham dung de test");
 
-        // Nhập giá (số nguyên để tránh lỗi dấu thập phân)
+        // Nhập giá
         driver.findElement(By.id("Price")).clear();
         driver.findElement(By.id("Price")).sendKeys("20");
 
@@ -123,10 +123,9 @@ public class ProductTest extends InKetQuaAdmin {
         // Mở trang sản phẩm
         driver.get(CauHinh.BASE_URL + "/AdminProducts");
 
-        // Chọn danh mục thứ 2 (bỏ "All categories")
+        // Chọn danh mục thứ 2
         new Select(driver.findElement(By.name("categoryId"))).selectByIndex(1);
 
-        // Nhấn Filter (không bấm nhầm Logout)
         CauHinh.bamNut(driver, "Filter");
 
         // Đợi URL đổi sau khi lọc

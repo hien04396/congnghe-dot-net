@@ -51,7 +51,7 @@ public class ProductImageTest extends InKetQuaAdmin {
     }
 
     @Test
-    @DisplayName("Từ chối URL hình ảnh không phải http/https")
+    @DisplayName("Không nhận URL hình ảnh sai")
     void testRejectRelativeImageUrl() {
         driver.get(CauHinh.BASE_URL + "/AdminProducts");
         driver.findElement(By.partialLinkText("Images")).click();

@@ -5,8 +5,6 @@ using OnlineShop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --no-launch-profile chạy môi trường Production: CSS isolation (OnlineShop.styles.css)
-// không được phục vụ trừ khi bật static web assets.
 if (!builder.Environment.IsDevelopment())
 {
     builder.WebHost.UseStaticWebAssets();

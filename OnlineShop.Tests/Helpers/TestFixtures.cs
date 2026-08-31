@@ -10,9 +10,6 @@ using OnlineShop.Services;
 
 namespace OnlineShop.Tests.Helpers;
 
-/// <summary>
-/// Session giả lập để kiểm thử CartService độc lập với HTTP thật.
-/// </summary>
 public sealed class FakeSession : ISession
 {
     private readonly Dictionary<string, byte[]> _store = new();
@@ -29,9 +26,6 @@ public sealed class FakeSession : ISession
     public bool TryGetValue(string key, out byte[] value) => _store.TryGetValue(key, out value!);
 }
 
-/// <summary>
-/// Tạo DbContext InMemory, HttpContext, CartService dùng chung cho unit/integration test.
-/// </summary>
 public static class TestFixtures
 {
     public static OnlineStoreContext CreateContext()
@@ -73,9 +67,6 @@ public static class TestFixtures
         controller.TempData = new TempDataDictionary(http, new NullTempDataProvider());
     }
 
-    /// <summary>
-    /// Tạo sản phẩm còn hàng kèm tồn kho, dùng làm dữ liệu Arrange.
-    /// </summary>
     public static Product SeedActiveProduct(
         OnlineStoreContext db,
         string name = "Basic White Shirt",

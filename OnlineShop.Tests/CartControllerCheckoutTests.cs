@@ -5,26 +5,19 @@ using OnlineShop.Tests.Helpers;
 
 namespace OnlineShop.Tests;
 
-/// <summary>
-/// Integration test CartController.Checkout với CartService + DbContext InMemory.
-/// Source: OnlineShop/Controllers/CartController.cs
-/// </summary>
 public class CartControllerCheckoutTests
 {
     [Fact]
     public async Task Checkout_GioTrong_BaoLoiVaXoaGio()
     {
-        // Arrange
         var (cart, http, db) = TestFixtures.CreateCartEnvironment();
         var customer = TestFixtures.SeedCustomer(db);
         TestFixtures.SetCustomerUser(http, customer.Id);
         var controller = new CartController(cart, db);
         TestFixtures.AttachTempData(controller, http);
 
-        // Act
         var result = await controller.Checkout();
 
-        // Assert
         var redirect = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("Index", redirect.ActionName);
         Assert.Equal("Nothing to checkout. All items are out of stock.", controller.TempData["Error"]);
@@ -34,7 +27,6 @@ public class CartControllerCheckoutTests
     [Fact]
     public async Task Checkout_ChiConHangHetHang_BaoLoi()
     {
-        // Arrange
         var db = TestFixtures.CreateContext();
         var product = TestFixtures.SeedActiveProduct(db, stock: 0);
         var customer = TestFixtures.SeedCustomer(db);
@@ -45,10 +37,8 @@ public class CartControllerCheckoutTests
         var controller = new CartController(cart, db);
         TestFixtures.AttachTempData(controller, http);
 
-        // Act
         var result = await controller.Checkout();
 
-        // Assert
         var redirect = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("Index", redirect.ActionName);
         Assert.Equal("Nothing to checkout. All items are out of stock.", controller.TempData["Error"]);
@@ -58,9 +48,6 @@ public class CartControllerCheckoutTests
     [Fact]
     public async Task Checkout_TonKhoGiamSauKhiThemGio_ClampRoiVanDatHang()
     {
-        // Arrange: Checkout luôn gọi RefreshStockFlagsAsync trước nên quantity bị kẹp theo stock hiện tại.
-        // Nhánh TempData "Some items no longer have enough stock" chỉ xảy ra nếu tồn kho
-        // thay đổi giữa hai lần đọc DB trong cùng request (đua tranh) — không tái hiện tuần tự.
         var db = TestFixtures.CreateContext();
         var product = TestFixtures.SeedActiveProduct(db, price: 10m, stock: 5);
         var customer = TestFixtures.SeedCustomer(db);
@@ -75,10 +62,8 @@ public class CartControllerCheckoutTests
         var controller = new CartController(cart, db);
         TestFixtures.AttachTempData(controller, http);
 
-        // Act
         var result = await controller.Checkout();
 
-        // Assert — đặt hàng với số lượng đã kẹp = 2, tồn kho còn 0
         var redirect = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("Details", redirect.ActionName);
         var order = Assert.Single(db.Orders);
@@ -90,7 +75,6 @@ public class CartControllerCheckoutTests
     [Fact]
     public async Task Checkout_HopLe_TaoDonGiamKhoVaXoaGio()
     {
-        // Arrange
         var db = TestFixtures.CreateContext();
         var product = TestFixtures.SeedActiveProduct(db, price: 20m, stock: 10);
         var customer = TestFixtures.SeedCustomer(db);
@@ -101,10 +85,8 @@ public class CartControllerCheckoutTests
         var controller = new CartController(cart, db);
         TestFixtures.AttachTempData(controller, http);
 
-        // Act
         var result = await controller.Checkout();
 
-        // Assert
         var redirect = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("Details", redirect.ActionName);
         Assert.Equal("Orders", redirect.ControllerName);

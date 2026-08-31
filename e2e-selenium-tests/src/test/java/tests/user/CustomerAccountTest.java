@@ -94,7 +94,6 @@ public class CustomerAccountTest extends InKetQua {
         driver.findElement(By.id("Password")).sendKeys("sai-mat-khau");
         CauHinh.bamNut(driver, "Login");
 
-        // Đợi thông báo lỗi hiện ra (trang cần tải lại sau khi gửi form)
         driver.findElement(By.xpath("//*[contains(.,'Invalid username or password')]"));
         assertTrue(driver.getCurrentUrl().contains("Account/Login"));
         assertFalse(driver.getPageSource().contains("Hello, " + username));

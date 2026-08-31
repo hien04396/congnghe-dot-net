@@ -51,7 +51,6 @@ public class CartTest extends InKetQua {
         // Nhấn Update
         CauHinh.bamNut(driver, "Update");
 
-        // Mở lại giỏ hàng để lấy dữ liệu mới (tránh phần tử cũ trên trang)
         driver.get(CauHinh.BASE_URL + "/Cart");
         assertEquals("2", driver.findElement(By.cssSelector("input[name='quantity']")).getAttribute("value"));
     }
@@ -76,7 +75,6 @@ public class CartTest extends InKetQua {
         // Thêm sản phẩm vào giỏ khi chưa đăng nhập
         CauHinh.themSanPhamVaoGio(driver);
 
-        // Chữ "login" nằm trong thẻ a nên đọc text của trang
         String noiDung = driver.findElement(By.tagName("body")).getText();
         assertTrue(noiDung.contains("login as customer to checkout"));
         assertEquals(0, driver.findElements(By.xpath("//button[contains(.,'Checkout')]")).size());

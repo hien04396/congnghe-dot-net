@@ -6,10 +6,6 @@ using OnlineShop.ViewModels;
 
 namespace OnlineShop.Tests;
 
-/// <summary>
-/// Integration test OrdersController — chỉ xem đơn của chính mình.
-/// Source: OnlineShop/Controllers/OrdersController.cs
-/// </summary>
 public class OrdersControllerTests
 {
     [Fact]
@@ -80,10 +76,6 @@ public class OrdersControllerTests
     }
 }
 
-/// <summary>
-/// Integration test StoreController — chỉ hiện sản phẩm IsActive.
-/// Source: OnlineShop/Controllers/StoreController.cs
-/// </summary>
 public class StoreControllerTests
 {
     [Fact]

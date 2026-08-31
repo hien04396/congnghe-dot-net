@@ -7,14 +7,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestWatcher;
 import org.openqa.selenium.WebDriver;
 
-/**
- * Class cha dùng chung cho mọi test.
- * - Mở Chrome trước mỗi test
- * - Đóng Chrome sau mỗi test
- * - In PASSED / FAILED ra Terminal
- *
- * Test nào cần đăng nhập Admin thì extends InKetQuaAdmin.
- */
 @ExtendWith(InKetQua.BaoCao.class)
 public abstract class InKetQua {
 
@@ -27,9 +19,6 @@ public abstract class InKetQua {
         sauKhiMoChrome();
     }
 
-    /**
-     * Gọi sau khi Chrome đã mở. Class con có thể ghi đè để đăng nhập.
-     */
     protected void sauKhiMoChrome() {
     }
 
@@ -41,9 +30,6 @@ public abstract class InKetQua {
         }
     }
 
-    /**
-     * In kết quả PASSED / FAILED ra Terminal sau mỗi test.
-     */
     public static class BaoCao implements TestWatcher {
 
         @Override

@@ -79,7 +79,7 @@ public class LoginTest extends InKetQua {
     }
 
     @Test
-    @DisplayName("Đã đăng nhập thì GET /admin chuyển về Dashboard")
+    @DisplayName("Đã đăng nhập thì vào Dashboard")
     void testRedirectToDashboardWhenAlreadyLoggedIn() {
         CauHinh.dangNhapAdmin(driver);
         driver.get(CauHinh.BASE_URL + "/admin");

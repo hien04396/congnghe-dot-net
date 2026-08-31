@@ -4,10 +4,6 @@ using OnlineShop.ViewModels;
 
 namespace OnlineShop.Tests;
 
-/// <summary>
-/// Kiểm thử DataAnnotations (black-box EP/BVA) trên ViewModel và Entity.
-/// Không gọi database.
-/// </summary>
 public class ValidationTests
 {
     private static IList<ValidationResult> Validate(object model)
@@ -20,7 +16,6 @@ public class ValidationTests
     [Fact]
     public void RegisterViewModel_HopLe_KhongLoi()
     {
-        // Arrange
         var model = new RegisterViewModel
         {
             Username = "alice",
@@ -28,10 +23,8 @@ public class ValidationTests
             ConfirmPassword = "123456"
         };
 
-        // Act
         var results = Validate(model);
 
-        // Assert
         Assert.Empty(results);
     }
 
@@ -53,7 +46,6 @@ public class ValidationTests
     [Fact]
     public void RegisterViewModel_UsernameDaiHon50_KhongHopLe()
     {
-        // Arrange — biên MaxLength(50): 51 ký tự
         var model = new RegisterViewModel
         {
             Username = new string('a', 51),
@@ -61,17 +53,14 @@ public class ValidationTests
             ConfirmPassword = "123456"
         };
 
-        // Act
         var results = Validate(model);
 
-        // Assert
         Assert.Contains(results, r => r.MemberNames.Contains(nameof(RegisterViewModel.Username)));
     }
 
     [Fact]
     public void RegisterViewModel_UsernameDung50_HopLe()
     {
-        // Arrange — biên MaxLength(50): đúng 50
         var model = new RegisterViewModel
         {
             Username = new string('a', 50),
@@ -79,10 +68,8 @@ public class ValidationTests
             ConfirmPassword = "123456"
         };
 
-        // Act
         var results = Validate(model);
 
-        // Assert
         Assert.Empty(results);
     }
 
@@ -126,13 +113,10 @@ public class ValidationTests
     [InlineData(6)]
     public void ProductReview_RatingNgoaiKhoang_Fail(int rating)
     {
-        // Arrange — BVA: 0 và 6 nằm ngoài Range(1,5)
         var review = new ProductReview { ProductId = 1, Rating = rating };
 
-        // Act
         var results = Validate(review);
 
-        // Assert
         Assert.Contains(results, r => r.MemberNames.Contains(nameof(ProductReview.Rating)));
     }
 

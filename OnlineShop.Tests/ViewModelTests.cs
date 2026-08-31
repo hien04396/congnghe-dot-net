@@ -4,10 +4,6 @@ using OnlineShop.ViewModels;
 
 namespace OnlineShop.Tests;
 
-/// <summary>
-/// Unit test công thức giá và tồn kho trên ProductDetailsViewModel.
-/// Source: OnlineShop/ViewModels/ProductDetailsViewModel.cs
-/// </summary>
 public class ProductDetailsViewModelTests
 {
     [Fact]
@@ -37,7 +33,6 @@ public class ProductDetailsViewModelTests
     [Fact]
     public void IsOutOfStock_StockBang1_False()
     {
-        // Biên: stock = 1 vẫn còn hàng
         var vm = new ProductDetailsViewModel
         {
             Product = new Product { Price = 10m },
@@ -84,10 +79,6 @@ public class ProductDetailsViewModelTests
     }
 }
 
-/// <summary>
-/// Phân trang danh sách sản phẩm storefront.
-/// Source: OnlineShop/ViewModels/ProductListViewModel.cs
-/// </summary>
 public class ProductListViewModelTests
 {
     [Fact]
@@ -112,10 +103,6 @@ public class ProductListViewModelTests
     }
 }
 
-/// <summary>
-/// Thuộc tính suy diễn của CartItem.
-/// Source: OnlineShop/Services/CartItem.cs
-/// </summary>
 public class CartItemTests
 {
     [Fact]

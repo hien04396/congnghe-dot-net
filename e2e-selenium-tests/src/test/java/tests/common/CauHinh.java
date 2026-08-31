@@ -11,7 +11,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
  */
 public class CauHinh {
 
-    // Địa chỉ website. Đổi bằng lệnh: mvn test -DbaseUrl=http://127.0.0.1:5088
     public static final String BASE_URL = System.getProperty("baseUrl", "http://127.0.0.1:5000");
 
     // Tài khoản admin mặc định của hệ thống
@@ -23,17 +22,13 @@ public class CauHinh {
      */
     public static WebDriver moChrome() {
         ChromeOptions options = new ChromeOptions();
-        // Xóa dòng dưới nếu muốn nhìn thấy cửa sổ Chrome khi test
         // options.addArguments("--headless=new");
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
 
         WebDriver driver = new ChromeDriver(options);
-        // Maximize sau khi mở cửa sổ. Không dùng --window-size=1920,1080
-        // vì trên Mac Retina viewport bị thu nhỏ, Bootstrap hiện layout mobile.
         driver.manage().window().maximize();
-        // Đợi tối đa 10 giây khi tìm một phần tử trên trang
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         return driver;
     }
@@ -46,7 +41,6 @@ public class CauHinh {
         driver.findElement(By.id("Username")).sendKeys(ADMIN_USERNAME);
         driver.findElement(By.id("Password")).sendKeys(ADMIN_PASSWORD);
         driver.findElement(By.cssSelector("button[type='submit']")).click();
-        // Đợi Dashboard hiện ra để chắc chắn đã đăng nhập xong
         driver.findElement(By.xpath("//h2[contains(text(),'Admin Dashboard')]"));
     }
 
@@ -59,7 +53,6 @@ public class CauHinh {
         driver.findElement(By.id("Password")).sendKeys(password);
         driver.findElement(By.id("ConfirmPassword")).sendKeys(password);
         bamNut(driver, "Register");
-        // Đợi trang chủ hiện tên khách hàng
         driver.findElement(By.xpath("//*[contains(text(),'Hello, " + username + "')]"));
     }
 
@@ -74,28 +67,16 @@ public class CauHinh {
         driver.findElement(By.xpath("//*[contains(text(),'Hello, " + username + "')]"));
     }
 
-    /**
-     * Bấm nút theo chữ trên nút.
-     * Không dùng button[type=submit] vì menu có nút Logout cũng là submit.
-     */
     public static void bamNut(WebDriver driver, String tenNut) {
         driver.findElement(By.xpath("//button[contains(.,'" + tenNut + "')]")).click();
     }
 
-    /**
-     * Đăng xuất khách hàng, đợi thấy link Login.
-     */
     public static void dangXuatKhach(WebDriver driver) {
         bamNut(driver, "Logout");
         driver.findElement(By.linkText("Login"));
     }
 
-    /**
-     * Thêm một sản phẩm còn hàng vào giỏ.
-     * Có thể phải lật trang vì sản phẩm mới tạo (hết hàng) đang đứng đầu danh sách.
-     */
     public static void themSanPhamVaoGio(WebDriver driver) {
-        // Giảm thời gian đợi khi kiểm tra sản phẩm hết hàng
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
         try {
             for (int trang = 1; trang <= 10; trang++) {
@@ -107,7 +88,6 @@ public class CauHinh {
                 for (int i = 0; i < soSanPham; i++) {
                     driver.get(BASE_URL + "/Store/Products?page=" + trang);
                     driver.findElements(By.linkText("View details")).get(i).click();
-                    // Trang chi tiết ghi "Out of stock" khi hết hàng
                     if (driver.getPageSource().contains("Out of stock")) {
                         continue;
                     }
